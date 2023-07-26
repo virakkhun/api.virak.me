@@ -1,4 +1,4 @@
-package shared_services
+package sharedServices
 
 import (
 	"strings"

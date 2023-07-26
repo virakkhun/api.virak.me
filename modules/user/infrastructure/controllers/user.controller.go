@@ -5,7 +5,7 @@ import (
 	"api.virak.me/modules/user/domain/validators"
 	"api.virak.me/modules/user/infrastructure/services"
 	"api.virak.me/shared/models"
-	shared_services "api.virak.me/shared/services"
+	sharedService "api.virak.me/shared/services"
 	"api.virak.me/utils"
 	"github.com/gofiber/fiber/v2"
 )
@@ -13,7 +13,7 @@ import (
 func Get(c *fiber.Ctx) error {
 	userId := c.Query("userId")
 	user := services.GetOneUser(userId)
-	return shared_services.HandlerResponseMapper(c, user.StatusCode, user)
+	return sharedService.HandlerResponseMapper(c, user.StatusCode, user)
 }
 
 func Create(c *fiber.Ctx) error {
@@ -22,7 +22,7 @@ func Create(c *fiber.Ctx) error {
 	err := c.BodyParser(user)
 
 	if utils.IsNotNil(err) {
-		return shared_services.HandlerResponseMapper(c, fiber.StatusInternalServerError, fiber.Map{
+		return sharedService.HandlerResponseMapper(c, fiber.StatusInternalServerError, fiber.Map{
 			"message": err.Error(),
 		})
 	}
@@ -30,12 +30,12 @@ func Create(c *fiber.Ctx) error {
 	validatedErrors := validators.ValidateCreateUserDTO(*user)
 
 	if validatedErrors != nil {
-		return shared_services.HandlerResponseMapper(c, fiber.StatusInternalServerError, validatedErrors)
+		return sharedService.HandlerResponseMapper(c, fiber.StatusInternalServerError, validatedErrors)
 	}
 
 	newUser := services.CreateUser(*user)
 
-	return shared_services.HandlerResponseMapper(c, newUser.StatusCode, newUser)
+	return sharedService.HandlerResponseMapper(c, newUser.StatusCode, newUser)
 }
 
 func Update(c *fiber.Ctx) error {
@@ -45,18 +45,18 @@ func Update(c *fiber.Ctx) error {
 	err := c.BodyParser(updateUser)
 
 	if utils.IsNotNil(err) {
-		return shared_services.HandlerResponseMapper(c, fiber.StatusInternalServerError, models.Map{
+		return sharedService.HandlerResponseMapper(c, fiber.StatusInternalServerError, models.Map{
 			"message": err.Error(),
 		})
 	}
 
 	result := services.UpdateUser(userId, *updateUser)
 
-	return shared_services.HandlerResponseMapper(c, result.StatusCode, result)
+	return sharedService.HandlerResponseMapper(c, result.StatusCode, result)
 }
 
 func Delete(c *fiber.Ctx) error {
 	result := services.DeleteUser(c.Query("userId"))
 
-	return shared_services.HandlerResponseMapper(c, fiber.StatusOK, result)
+	return sharedService.HandlerResponseMapper(c, fiber.StatusOK, result)
 }

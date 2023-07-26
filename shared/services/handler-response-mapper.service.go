@@ -1,4 +1,4 @@
-package shared_services
+package sharedServices
 
 import "github.com/gofiber/fiber/v2"
 

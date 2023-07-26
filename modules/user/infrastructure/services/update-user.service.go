@@ -5,7 +5,7 @@ import (
 	"api.virak.me/modules/user/domain/dto"
 	"api.virak.me/modules/user/domain/entities"
 	"api.virak.me/shared/models"
-	shared_services "api.virak.me/shared/services"
+	sharedServices "api.virak.me/shared/services"
 	"api.virak.me/utils"
 	"github.com/gofiber/fiber/v2"
 )
@@ -14,12 +14,12 @@ func UpdateUser(id string, dto dto.UpdateUserDTO) models.BaseResponse {
 	user, err := GetOneUserByID(id)
 
 	if utils.IsNotNil(err) {
-		return shared_services.ServiceResponseMapper(user, err.Error(), fiber.StatusNotFound)
+		return sharedServices.ServiceResponseMapper(user, err.Error(), fiber.StatusNotFound)
 	}
 
 	resultUpdated := database.DB.Model(&user).Updates(entities.UserEntity{
 		Email:    dto.Email,
-		Password: shared_services.HashPassword(dto.Password),
+		Password: sharedServices.HashPassword(dto.Password),
 		Username: dto.Username,
 		Role:     dto.Role,
 		Photo:    dto.Photo,
@@ -28,13 +28,15 @@ func UpdateUser(id string, dto dto.UpdateUserDTO) models.BaseResponse {
 	updateResultError := resultUpdated.Error
 
 	if utils.IsNotNil(updateResultError) {
-		return shared_services.ServiceResponseMapper(user, updateResultError.Error(), fiber.StatusBadRequest)
+		return sharedServices.ServiceResponseMapper(user, updateResultError.Error(), fiber.StatusBadRequest)
 	}
 
-	userMap := utils.MergeMap(user, user.Model)
+	userMap, _ := utils.StructToMap(user)
+	modelMap, _ := utils.StructToMap(user.Model)
+	mergedMap := utils.MergeMap(userMap, modelMap)
 
-	delete(userMap, "Password")
-	delete(userMap, "Model")
+	delete(mergedMap, "Password")
+	delete(mergedMap, "Model")
 
-	return shared_services.ServiceResponseMapper(userMap, "success updated", fiber.StatusOK)
+	return sharedServices.ServiceResponseMapper(mergedMap, "success updated", fiber.StatusOK)
 }
