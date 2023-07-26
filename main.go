@@ -1,8 +1,8 @@
 package main
 
 import (
-	"api.virak.me/app"
-	"api.virak.me/config"
+	"api.virak.me/src/app"
+	"api.virak.me/src/config"
 )
 
 func init() {
