@@ -7,7 +7,7 @@ import (
 	"api.virak.me/modules/blog/domain/entities"
 	"api.virak.me/modules/blog/domain/validators"
 	blogService "api.virak.me/modules/blog/infrastructure/services"
-	shared_services "api.virak.me/shared/services"
+	sharedServices "api.virak.me/shared/services"
 	"api.virak.me/utils"
 	"github.com/gofiber/fiber/v2"
 )
@@ -15,12 +15,12 @@ import (
 func GetAllBlog(c *fiber.Ctx) error {
 	allBlogs := blogService.GetBlogs()
 
-	return shared_services.HandlerResponseMapper(c, allBlogs.StatusCode, allBlogs)
+	return sharedServices.HandlerResponseMapper(c, allBlogs.StatusCode, allBlogs)
 }
 
 func GetOneBlog(c *fiber.Ctx) error {
 	oneBlog := blogService.GetOneBlog(c.Query("blogId"))
-	return shared_services.HandlerResponseMapper(c, oneBlog.StatusCode, oneBlog)
+	return sharedServices.HandlerResponseMapper(c, oneBlog.StatusCode, oneBlog)
 }
 
 func CreateOneBlog(c *fiber.Ctx) error {
@@ -29,7 +29,7 @@ func CreateOneBlog(c *fiber.Ctx) error {
 	err := c.BodyParser(blog)
 
 	if utils.IsNotNil(err) {
-		return shared_services.HandlerResponseMapper(c, fiber.StatusInternalServerError, fiber.Map{
+		return sharedServices.HandlerResponseMapper(c, fiber.StatusInternalServerError, fiber.Map{
 			"message": err.Error(),
 		})
 	}
@@ -37,7 +37,7 @@ func CreateOneBlog(c *fiber.Ctx) error {
 	validatedErrors := validators.ValidateCreateBlogSchema(*blog)
 
 	if validatedErrors != nil {
-		return shared_services.HandlerResponseMapper(c, fiber.StatusInternalServerError, validatedErrors)
+		return sharedServices.HandlerResponseMapper(c, fiber.StatusInternalServerError, validatedErrors)
 	}
 
 	newBlog := blogService.CreateOneBlog(entities.BlogEntity{
@@ -47,7 +47,7 @@ func CreateOneBlog(c *fiber.Ctx) error {
 		Viewer:      int16(blog.Viewer),
 	})
 
-	return shared_services.HandlerResponseMapper(c, newBlog.StatusCode, newBlog)
+	return sharedServices.HandlerResponseMapper(c, newBlog.StatusCode, newBlog)
 }
 
 func UpdateOneBlog(c *fiber.Ctx) error {
@@ -58,14 +58,14 @@ func UpdateOneBlog(c *fiber.Ctx) error {
 	errors := c.BodyParser(blog)
 
 	if utils.IsNotNil(errors) {
-		return shared_services.HandlerResponseMapper(c, fiber.StatusInternalServerError, fiber.Map{
+		return sharedServices.HandlerResponseMapper(c, fiber.StatusInternalServerError, fiber.Map{
 			"message": errors.Error(),
 		})
 	}
 
 	res := blogService.UpdateBlog(blogId, *blog)
 
-	return shared_services.HandlerResponseMapper(c, res.StatusCode, res)
+	return sharedServices.HandlerResponseMapper(c, res.StatusCode, res)
 }
 
 func DeleteOneBlog(c *fiber.Ctx) error {
@@ -75,5 +75,5 @@ func DeleteOneBlog(c *fiber.Ctx) error {
 
 	fmt.Println(deleteBlog)
 
-	return shared_services.HandlerResponseMapper(c, deleteBlog.StatusCode, deleteBlog)
+	return sharedServices.HandlerResponseMapper(c, deleteBlog.StatusCode, deleteBlog)
 }

@@ -4,7 +4,7 @@ import (
 	"api.virak.me/config/database"
 	"api.virak.me/modules/user/domain/entities"
 	"api.virak.me/shared/models"
-	shared_services "api.virak.me/shared/services"
+	sharedServices "api.virak.me/shared/services"
 	"api.virak.me/utils"
 	"github.com/gofiber/fiber/v2"
 )
@@ -17,15 +17,15 @@ func GetOneUser(id string) models.BaseResponse {
 	err := result.Error
 
 	if utils.IsNotNil(err) {
-		return shared_services.ServiceResponseMapper(nil, err.Error(), fiber.StatusNotFound)
+		return sharedServices.ServiceResponseMapper(nil, err.Error(), fiber.StatusNotFound)
 	}
 
-	userMap := utils.MergeMap(user, user.Model)
+	userMap, _ := utils.StructToMap(user)
+	modelMap, _ := utils.StructToMap(user.Model)
+	mergedMap := utils.MergeMap(userMap, modelMap)
+	utils.DeleteMultiKeys(&mergedMap, []string{"Password", "Model"})
 
-	delete(userMap, "Password")
-	delete(userMap, "Model")
-
-	return shared_services.ServiceResponseMapper(userMap, "success", fiber.StatusOK)
+	return sharedServices.ServiceResponseMapper(mergedMap, "success", fiber.StatusOK)
 }
 
 func GetOneUserByEmail(email string) (entities.UserEntity, error) {

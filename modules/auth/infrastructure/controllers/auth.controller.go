@@ -6,7 +6,7 @@ import (
 	"api.virak.me/modules/auth/domain/dto"
 	"api.virak.me/modules/auth/domain/validators"
 	"api.virak.me/modules/auth/infrastructure/services"
-	shared_services "api.virak.me/shared/services"
+	sharedServices "api.virak.me/shared/services"
 	"api.virak.me/utils"
 	"github.com/gofiber/fiber/v2"
 )
@@ -17,7 +17,7 @@ func Login(c *fiber.Ctx) error {
 	err := c.BodyParser(loginDto)
 
 	if utils.IsNotNil(err) {
-		return shared_services.HandlerResponseMapper(c, fiber.StatusInternalServerError, fiber.Map{
+		return sharedServices.HandlerResponseMapper(c, fiber.StatusInternalServerError, fiber.Map{
 			"message": err.Error(),
 		})
 	}
@@ -25,13 +25,13 @@ func Login(c *fiber.Ctx) error {
 	validatedErrors := validators.ValidateLoginDTO(*loginDto)
 
 	if validatedErrors != nil {
-		return shared_services.HandlerResponseMapper(c, fiber.StatusInternalServerError, validatedErrors)
+		return sharedServices.HandlerResponseMapper(c, fiber.StatusInternalServerError, validatedErrors)
 	}
 
 	loginResult := services.Login(*loginDto)
 
 	if loginResult.Data == nil {
-		return shared_services.HandlerResponseMapper(c, loginResult.StatusCode, loginResult)
+		return sharedServices.HandlerResponseMapper(c, loginResult.StatusCode, loginResult)
 	}
 
 	c.Cookie(&fiber.Cookie{
@@ -53,7 +53,7 @@ func Register(c *fiber.Ctx) error {
 	err := c.BodyParser(registerDto)
 
 	if utils.IsNotNil(err) {
-		return shared_services.HandlerResponseMapper(c, fiber.StatusInternalServerError, fiber.Map{
+		return sharedServices.HandlerResponseMapper(c, fiber.StatusInternalServerError, fiber.Map{
 			"message": err.Error(),
 		})
 	}
@@ -61,10 +61,10 @@ func Register(c *fiber.Ctx) error {
 	validatedErrors := validators.ValidateRegisterDTO(*registerDto)
 
 	if validatedErrors != nil {
-		return shared_services.HandlerResponseMapper(c, fiber.StatusInternalServerError, validatedErrors)
+		return sharedServices.HandlerResponseMapper(c, fiber.StatusInternalServerError, validatedErrors)
 	}
 
 	registerResult := services.Register(*registerDto)
 
-	return shared_services.HandlerResponseMapper(c, registerResult.StatusCode, registerResult)
+	return sharedServices.HandlerResponseMapper(c, registerResult.StatusCode, registerResult)
 }

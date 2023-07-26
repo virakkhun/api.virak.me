@@ -4,17 +4,14 @@ import (
 	"api.virak.me/shared/models"
 )
 
-func MergeMap(dest, src interface{}) models.Map {
+func MergeMap(dest, src models.Map) models.Map {
 	hashMap := make(models.Map)
 
-	destData, _ := StructToMap(dest)
-	srcData, _ := StructToMap(src)
-
-	for k, v := range srcData {
+	for k, v := range dest {
 		hashMap[k] = v
 	}
 
-	for k, v := range destData {
+	for k, v := range src {
 		hashMap[k] = v
 	}
 
