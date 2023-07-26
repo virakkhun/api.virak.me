@@ -1,0 +1,7 @@
+*.md
+.hooks
+.vscode
+.gitignore
+api.virak.me
+*.yml
+Dockerfile
