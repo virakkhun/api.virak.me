@@ -4,9 +4,9 @@ import (
 	"time"
 
 	"api.virak.me/src/modules/auth/domain/dto"
-	"api.virak.me/src/modules/auth/domain/validators"
 	"api.virak.me/src/modules/auth/infrastructure/services"
 	sharedServices "api.virak.me/src/shared/services"
+	sharedValidators "api.virak.me/src/shared/validators"
 	"api.virak.me/src/utils"
 	"github.com/gofiber/fiber/v2"
 )
@@ -22,7 +22,7 @@ func Login(c *fiber.Ctx) error {
 		})
 	}
 
-	validatedErrors := validators.ValidateLoginDTO(*loginDto)
+	validatedErrors := sharedValidators.Validate(*loginDto)
 
 	if validatedErrors != nil {
 		return sharedServices.HandlerResponseMapper(c, fiber.StatusInternalServerError, validatedErrors)
@@ -58,7 +58,7 @@ func Register(c *fiber.Ctx) error {
 		})
 	}
 
-	validatedErrors := validators.ValidateRegisterDTO(*registerDto)
+	validatedErrors := sharedValidators.Validate(*registerDto)
 
 	if validatedErrors != nil {
 		return sharedServices.HandlerResponseMapper(c, fiber.StatusInternalServerError, validatedErrors)

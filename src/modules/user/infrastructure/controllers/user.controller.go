@@ -2,10 +2,10 @@ package controllers
 
 import (
 	"api.virak.me/src/modules/user/domain/dto"
-	"api.virak.me/src/modules/user/domain/validators"
 	"api.virak.me/src/modules/user/infrastructure/services"
 	"api.virak.me/src/shared/models"
 	sharedService "api.virak.me/src/shared/services"
+	sharedValidators "api.virak.me/src/shared/validators"
 	"api.virak.me/src/utils"
 	"github.com/gofiber/fiber/v2"
 )
@@ -27,7 +27,7 @@ func Create(c *fiber.Ctx) error {
 		})
 	}
 
-	validatedErrors := validators.ValidateCreateUserDTO(*user)
+	validatedErrors := sharedValidators.Validate(*user)
 
 	if validatedErrors != nil {
 		return sharedService.HandlerResponseMapper(c, fiber.StatusInternalServerError, validatedErrors)
