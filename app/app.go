@@ -2,6 +2,7 @@ package app
 
 import (
 	"os"
+	"strings"
 
 	"api.virak.me/config/database"
 	"github.com/gofiber/fiber/v2"
@@ -14,7 +15,7 @@ func Bootstrap() {
 
 	app := fiber.New()
 
-	PORT := os.Getenv("PORT")
+	PORT := strings.Join([]string{"", os.Getenv("PORT")}, ":")
 
 	Middleware(app)
 
