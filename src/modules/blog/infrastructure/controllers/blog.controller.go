@@ -1,13 +1,11 @@
 package controllers
 
 import (
-	"fmt"
-
 	"api.virak.me/src/modules/blog/domain/dto"
 	"api.virak.me/src/modules/blog/domain/entities"
-	"api.virak.me/src/modules/blog/domain/validators"
 	blogService "api.virak.me/src/modules/blog/infrastructure/services"
 	sharedServices "api.virak.me/src/shared/services"
+	sharedValidators "api.virak.me/src/shared/validators"
 	"api.virak.me/src/utils"
 	"github.com/gofiber/fiber/v2"
 )
@@ -34,7 +32,7 @@ func CreateOneBlog(c *fiber.Ctx) error {
 		})
 	}
 
-	validatedErrors := validators.ValidateCreateBlogSchema(*blog)
+	validatedErrors := sharedValidators.Validate[dto.BlogDTO](*blog)
 
 	if validatedErrors != nil {
 		return sharedServices.HandlerResponseMapper(c, fiber.StatusInternalServerError, validatedErrors)
@@ -72,8 +70,6 @@ func DeleteOneBlog(c *fiber.Ctx) error {
 	blogId := c.Query("blogId")
 
 	deleteBlog := blogService.DeleteBlog(blogId)
-
-	fmt.Println(deleteBlog)
 
 	return sharedServices.HandlerResponseMapper(c, deleteBlog.StatusCode, deleteBlog)
 }
