@@ -16,9 +16,8 @@ jobs:
       - name: Test
         run: |
           go version
-          FILES=$(ls -la)
-          echo "\e[4;35m$FILES"
+          ls -la
           cd src/utils
           TEST_RESULT=fail
-          TEST_RESULT=$(go test -v | grep -op ok)
+          TEST_RESULT=$(go test . | grep -oP ok)
           if [ $TEST_RESULT = "ok" ]; then echo "\e[4;32mTest success 🎉"; else echo "\e[4;31mTest failed 🤯"; fi;
