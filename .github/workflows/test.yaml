@@ -1,6 +1,10 @@
-name: CI PROD
+name: CI Test
 run-name: ${{ github.actor }}
-on: [pull_request]
+on:
+  pull_request:
+    branches:
+      - "development"
+
 jobs:
   test:
     runs-on: ubuntu-22.04
@@ -20,4 +24,4 @@ jobs:
           cd src/utils
           TEST_RESULT=fail
           TEST_RESULT=$(go test . | grep -oP ok)
-          if [ $TEST_RESULT = "ok" ]; then echo "\e[4;32mTest success 🎉"; else echo "\e[4;31mTest failed 🤯"; fi;
+          if [ $TEST_RESULT = "ok" ]; then echo "Test success 🎉"; else echo "Test failed 🤯"; fi;
